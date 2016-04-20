@@ -284,6 +284,11 @@ wms.Overlay = L.Layer.extend({
             'opacity': true,
             'attribution': true
         };
+        // Allow for an onError callback
+        if(options && options.onError) {
+          this.onError = options.onError;
+        }
+        
         var params = {};
         for (var opt in options) {
              if (options.hasOwnProperty(opt) && !optNames[opt]) {
@@ -344,6 +349,13 @@ wms.Overlay = L.Layer.extend({
         var overlay = L.imageOverlay(url, bounds, {'opacity': 0});
         overlay.addTo(this._map);
         overlay.once('load', _swap, this);
+        // Listen for a failure to load the image source and then call this.onError callback
+        L.DomEvent.on(overlay._image, 'error', (function() {
+            if(this.onError !== undefined) {
+                this.onError({error: "Failed to load layer", url: overlay._image.src});
+            }
+        }).bind(this));
+        
         function _swap() {
             if (!this._map) {
                 return;
