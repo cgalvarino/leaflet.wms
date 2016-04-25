@@ -309,6 +309,14 @@ wms.Overlay = L.Layer.extend({
         return this.options.attribution;
     },
 
+    'onLoadStart': function() {
+      // A stub that can be used as a callback.
+    },
+
+    'onLoadEnd': function() {
+      // A stub that can be used as a callback.
+    },
+
     'onAdd': function(map) {
         L.Layer.prototype.onAdd.call(this, map);
         this.update();
@@ -335,6 +343,10 @@ wms.Overlay = L.Layer.extend({
         if (!this._map) {
             return;
         }
+
+        // Image is starting the loading process.  Fire a callback.
+        this.onLoadStart && this.onLoadStart();
+
         // Determine image URL and whether it has changed since last update
         this.updateWmsParams();
         var url = this.getImageUrl();
@@ -360,6 +372,10 @@ wms.Overlay = L.Layer.extend({
             if (!this._map) {
                 return;
             }
+
+            // Image has been loaded so fire a callback.
+            this.onLoadEnd && this.onLoadEnd();
+
             if (overlay._url != this._currentUrl) {
                 this._map.removeLayer(overlay);
                 return;
