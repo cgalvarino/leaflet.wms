@@ -284,10 +284,6 @@ wms.Overlay = L.Layer.extend({
             'opacity': true,
             'attribution': true
         };
-        // Allow for an onError callback
-        if(options && options.onError) {
-          this.onError = options.onError;
-        }
         
         var params = {};
         for (var opt in options) {
@@ -307,6 +303,10 @@ wms.Overlay = L.Layer.extend({
 
     'getAttribution': function() {
         return this.options.attribution;
+    },
+
+    'onError': function(e) {
+      // A stub that can be used as a callback.
     },
 
     'onLoadStart': function() {
