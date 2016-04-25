@@ -63,7 +63,7 @@ wms.Source = L.Layer.extend({
         this._overlay = this.createOverlay(url, options);
     },
 
-    'crerteOverlay': function(url, options) {
+    'createOverlay': function(url, options) {
         if (options.tiled) {
             return wms.tileLayer(url, options);
         } else {
