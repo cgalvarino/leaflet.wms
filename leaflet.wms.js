@@ -371,6 +371,9 @@ wms.Overlay = L.Layer.extend({
                 this.options.opacity ? this.options.opacity : 1
             );
         }
+
+        // Save the overlay so that it can be accessed by the outside world.
+        this.overlay = overlay;
     },
 
     // See L.TileLayer.WMS: onAdd() & getTileUrl()
