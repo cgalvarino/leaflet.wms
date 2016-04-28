@@ -366,7 +366,7 @@ wms.Overlay = L.Layer.extend({
         // Listen for a failure to load the image source and then call this.onError callback
         L.DomEvent.on(overlay._image, 'error', (function() {
             if(this.onError !== undefined) {
-                this._currentOverlay.setUrl(this.onErrorImage);
+                this._currentOverlay && this._currentOverlay.setUrl(this.onErrorImage);
                 this.onError({error: "Failed to load layer", url: overlay._image.src});
             }
         }).bind(this));
