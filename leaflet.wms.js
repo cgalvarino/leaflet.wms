@@ -305,6 +305,8 @@ wms.Overlay = L.Layer.extend({
         return this.options.attribution;
     },
 
+    'onErrorImage': '', // Provide an image that will appear on the map in the event of an error.  Suggest a blank image.
+
     'onError': function(e) {
       // A stub that can be used as a callback.
     },
@@ -364,6 +366,7 @@ wms.Overlay = L.Layer.extend({
         // Listen for a failure to load the image source and then call this.onError callback
         L.DomEvent.on(overlay._image, 'error', (function() {
             if(this.onError !== undefined) {
+                this._currentOverlay.setUrl(this.onErrorImage);
                 this.onError({error: "Failed to load layer", url: overlay._image.src});
             }
         }).bind(this));
