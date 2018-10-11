@@ -345,6 +345,18 @@ wms.Overlay = L.Layer.extend({
         return this.options.attribution;
     },
 
+    'onErrorImage': '', // Provide an image that will appear on the map in the event of an error.  Suggest a blank image.
+
+    'onError': function(e) {
+      // A stub that can be used as a callback.
+    },
+     'onLoadStart': function() {
+      // A stub that can be used as a callback.
+    },
+     'onLoadEnd': function() {
+      // A stub that can be used as a callback.
+    },
+
     'onAdd': function() {
         this.update();
     },
@@ -369,6 +381,10 @@ wms.Overlay = L.Layer.extend({
         if (!this._map) {
             return;
         }
+
+        // Image is starting the loading process.  Fire a callback.
+        this.onLoadStart && this.onLoadStart();
+
         // Determine image URL and whether it has changed since last update
         this.updateWmsParams();
         var url = this.getImageUrl();
@@ -383,10 +399,22 @@ wms.Overlay = L.Layer.extend({
         var overlay = L.imageOverlay(url, bounds, {'opacity': 0});
         overlay.addTo(this._map);
         overlay.once('load', _swap, this);
+        // Listen for a failure to load the image source and then call this.onError callback
+        L.DomEvent.on(overlay._image, 'error', (function() {
+            if(this.onError !== undefined) {
+                this._currentOverlay && this._currentOverlay.setUrl(this.onErrorImage);
+                this.onError({error: "Failed to load layer", url: overlay._image.src});
+            }
+        }).bind(this));
+
         function _swap() {
             if (!this._map) {
                 return;
             }
+
+            // Image has been loaded so fire a callback.
+            this.onLoadEnd && this.onLoadEnd();
+
             if (overlay._url != this._currentUrl) {
                 this._map.removeLayer(overlay);
                 return;
@@ -404,6 +432,10 @@ wms.Overlay = L.Layer.extend({
                 overlay.bringToFront();
             }
         }
+
+        // Save the overlay so that it can be accessed by the outside world.
+        this.overlay = overlay;
+
         if ((this._map.getZoom() < this.options.minZoom) ||
             (this._map.getZoom() > this.options.maxZoom)){
             this._map.removeLayer(overlay);
