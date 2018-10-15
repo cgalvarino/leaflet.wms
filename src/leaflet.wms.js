@@ -393,10 +393,16 @@ wms.Overlay = L.Layer.extend({
         }
         this._currentUrl = url;
 
+        // Add the pane option if defined.
+        var options = {'opacity': 0};
+        if (this.options.pane !== undefined) {
+          options.pane = this.options.pane;
+        }
+
         // Keep current image overlay in place until new one loads
         // (inspired by esri.leaflet)
         var bounds = this._map.getBounds();
-        var overlay = L.imageOverlay(url, bounds, {'opacity': 0});
+        var overlay = L.imageOverlay(url, bounds, options);
         overlay.addTo(this._map);
         overlay.once('load', _swap, this);
         // Listen for a failure to load the image source and then call this.onError callback
