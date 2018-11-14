@@ -418,9 +418,6 @@ wms.Overlay = L.Layer.extend({
                 return;
             }
 
-            // Image has been loaded so fire a callback.
-            this.onLoadEnd && this.onLoadEnd();
-
             if (overlay._url != this._currentUrl) {
                 this._map.removeLayer(overlay);
                 return;
@@ -437,6 +434,9 @@ wms.Overlay = L.Layer.extend({
             if (this.options.isBack === false) {
                 overlay.bringToFront();
             }
+
+            // Image has been loaded so fire a callback.
+            this.onLoadEnd && this.onLoadEnd();
         }
 
         // Save the overlay so that it can be accessed by the outside world.
